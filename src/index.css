@@ -1,0 +1,137 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: #333;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
+
+.header {
+    background: #35424a;
+    color: #ffffff;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.footer {
+    background: #35424a;
+    color: #ffffff;
+    text-align: center;
+    padding: 10px 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+.button {
+    display: inline-block;
+    font-size: 16px;
+    color: #fff;
+    background: #35424a;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background: #45a049;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    padding: 20px;
+}
+
+/* Add these CSS classes to your existing styles */
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+    margin-top: 5px;
+}
+
+textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.button {
+    display: inline-block;
+    font-size: 16px;
+    color: #fff;
+    background: #35424a;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.button:hover {
+    background: #45a049;
+}
+
+.button-link {
+    display: inline-block;
+    margin-top: 10px;
+    text-decoration: none;
+}
+
+.list-container {
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-links li {
+    margin-right: 15px;
+}
+
+.nav-links a {
+    padding: 8px 12px;
+    color: white;
+    text-decoration: none;
+}
+
+.nav-links a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
