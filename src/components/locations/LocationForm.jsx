@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { CREATE_LOCATION } from "../../graphql/mutations/locationMutations";
+import { GET_LOCATIONS } from "../../graphql/queries/locationQueries";
+import { useHistory } from "react-router-dom";
 
 const LocationForm = () => {
     const [street, setStreet] = useState("");
@@ -8,6 +10,7 @@ const LocationForm = () => {
     const [state, setState] = useState("");
     const [country, setCountry] = useState("");
     const [timezone, setTimezone] = useState("");
+    const history = useHistory();
 
     const [createLocation] = useMutation(CREATE_LOCATION, {
         onCompleted: () => {
@@ -18,10 +21,12 @@ const LocationForm = () => {
             setCountry("");
             setTimezone("");
             alert("Location created successfully!");
+            history.push("/locations");
         },
         onError: (error) => {
             console.error("Error creating location:", error);
         },
+        refetchQueries: [{ query: GET_LOCATIONS }],
     });
 
     const handleSubmit = (e) => {

@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
+import { useHistory } from "react-router-dom";
 import {
     CREATE_USER,
     UPDATE_USER,
 } from "../../graphql/mutations/userMutations";
+import { GET_USERS } from "../../graphql/queries/userQueries";
 
 const UserForm = ({ user, onUserSaved }) => {
     const [firstName, setFirstName] = useState(user ? user.firstName : "");
     const [lastName, setLastName] = useState(user ? user.lastName : "");
     const [email, setEmail] = useState(user ? user.email : "");
+    const [password, setPassword] = useState("");
+    const history = useHistory();
 
     const [createUser] = useMutation(CREATE_USER, {
         onCompleted: () => {
@@ -17,22 +21,31 @@ const UserForm = ({ user, onUserSaved }) => {
                 setFirstName("");
                 setLastName("");
                 setEmail("");
+                setPassword("");
             }
             alert("User saved successfully!");
+            history.push("/users");
         },
         onError: (error) => {
             console.error("Error saving user:", error);
         },
+        refetchQueries: [
+            { query: GET_USERS, variables: { page: 0, limit: 10 } },
+        ],
     });
 
     const [updateUser] = useMutation(UPDATE_USER, {
         onCompleted: () => {
             onUserSaved && onUserSaved();
             alert("User updated successfully!");
+            history.push("/users");
         },
         onError: (error) => {
             console.error("Error updating user:", error);
         },
+        refetchQueries: [
+            { query: GET_USERS, variables: { page: 0, limit: 10 } },
+        ],
     });
 
     const handleSubmit = (e) => {
@@ -42,7 +55,9 @@ const UserForm = ({ user, onUserSaved }) => {
                 variables: { id: user.id, firstName, lastName, email },
             });
         } else {
-            createUser({ variables: { firstName, lastName, email } });
+            createUser({
+                variables: { firstName, lastName, email, password },
+            });
         }
     };
 
@@ -83,6 +98,19 @@ const UserForm = ({ user, onUserSaved }) => {
                         required
                     />
                 </div>
+                {!user && (
+                    <div className="form-group">
+                        <label htmlFor="password">Password:</label>
+                        <input
+                            id="password"
+                            className="form-control"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                )}
                 <button type="submit" className="button">
                     {user ? "Update User" : "Create User"}
                 </button>

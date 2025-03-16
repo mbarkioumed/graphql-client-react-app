@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+    BrowserRouter as Router,
+    Route,
+    Switch,
+    Redirect,
+} from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 import UserList from "./users/UserList";
@@ -14,17 +19,40 @@ import LocationList from "./locations/LocationList";
 import LocationForm from "./locations/LocationForm";
 import TagList from "./tags/TagList";
 import TagForm from "./tags/TagForm";
+import Login from "./auth/Login";
+import { AuthProvider, useAuth } from "../contexts/AuthContext";
 
-const App = () => {
+// Protected route component
+const PrivateRoute = ({ component: Component, ...rest }) => {
+    const { currentUser } = useAuth();
+
+    return (
+        <Route
+            {...rest}
+            render={(props) =>
+                currentUser ? (
+                    <Component {...props} />
+                ) : (
+                    <Redirect to="/login" />
+                )
+            }
+        />
+    );
+};
+
+const AppContent = () => {
     return (
         <Router>
             <div>
                 <Header />
                 <div className="container">
                     <Switch>
+                        {/* Auth Routes */}
+                        <Route path="/login" component={Login} />
+
                         {/* User Routes */}
                         <Route exact path="/users" component={UserList} />
-                        <Route
+                        <PrivateRoute
                             path="/users/new"
                             component={() => (
                                 <UserForm onUserSaved={() => {}} />
@@ -39,7 +67,7 @@ const App = () => {
 
                         {/* Post Routes */}
                         <Route exact path="/posts" component={PostList} />
-                        <Route path="/posts/new" component={PostForm} />
+                        <PrivateRoute path="/posts/new" component={PostForm} />
                         <Route
                             path="/posts/:id"
                             component={({ match }) => (
@@ -49,7 +77,10 @@ const App = () => {
 
                         {/* Comment Routes */}
                         <Route exact path="/comments" component={CommentList} />
-                        <Route path="/comments/new" component={CommentForm} />
+                        <PrivateRoute
+                            path="/comments/new"
+                            component={CommentForm}
+                        />
 
                         {/* Location Routes */}
                         <Route
@@ -57,11 +88,14 @@ const App = () => {
                             path="/locations"
                             component={LocationList}
                         />
-                        <Route path="/locations/new" component={LocationForm} />
+                        <PrivateRoute
+                            path="/locations/new"
+                            component={LocationForm}
+                        />
 
                         {/* Tag Routes */}
                         <Route exact path="/tags" component={TagList} />
-                        <Route path="/tags/new" component={TagForm} />
+                        <PrivateRoute path="/tags/new" component={TagForm} />
 
                         {/* Home Route */}
                         <Route exact path="/" component={PostList} />
@@ -70,6 +104,14 @@ const App = () => {
                 <Footer />
             </div>
         </Router>
+    );
+};
+
+const App = () => {
+    return (
+        <AuthProvider>
+            <AppContent />
+        </AuthProvider>
     );
 };
 

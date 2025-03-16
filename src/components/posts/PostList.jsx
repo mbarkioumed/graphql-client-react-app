@@ -41,7 +41,7 @@ const PostList = () => {
                         </p>
                         <p>Likes: {post.likes || 0}</p>
                         <Link
-                            to={`/post/${post.id}`}
+                            to={`/posts/${post.id}`}
                             className="button button-link"
                         >
                             View Details

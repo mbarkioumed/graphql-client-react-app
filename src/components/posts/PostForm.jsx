@@ -1,26 +1,48 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { CREATE_POST } from "../../graphql/mutations/postMutations";
+import { GET_POSTS } from "../../graphql/queries/postQueries";
+import { useAuth } from "../../contexts/AuthContext";
+import { useHistory } from "react-router-dom";
 
 const PostForm = () => {
     const [text, setText] = useState("");
-    const [ownerId, setOwnerId] = useState("");
+    const { currentUser } = useAuth();
+    const history = useHistory();
 
     const [createPost] = useMutation(CREATE_POST, {
         onCompleted: () => {
             setText("");
-            setOwnerId("");
             alert("Post created successfully!");
+            history.push("/posts");
         },
         onError: (error) => {
             console.error("Error creating post:", error);
         },
+        refetchQueries: [
+            { query: GET_POSTS, variables: { page: 0, limit: 10 } },
+        ],
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        createPost({ variables: { text, ownerId } });
+        createPost({ variables: { text, ownerId: currentUser.id } });
     };
+
+    if (!currentUser) {
+        return (
+            <div className="card">
+                <h2>Create New Post</h2>
+                <p>You must be logged in to create a post.</p>
+                <button
+                    onClick={() => history.push("/login")}
+                    className="button"
+                >
+                    Login
+                </button>
+            </div>
+        );
+    }
 
     return (
         <div className="card">
@@ -38,14 +60,13 @@ const PostForm = () => {
                     />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="ownerId">Author ID:</label>
+                    <label htmlFor="ownerId">Author:</label>
                     <input
                         id="ownerId"
                         className="form-control"
                         type="text"
-                        value={ownerId}
-                        onChange={(e) => setOwnerId(e.target.value)}
-                        required
+                        value={`${currentUser.firstName} ${currentUser.lastName} (ID: ${currentUser.id})`}
+                        disabled
                     />
                 </div>
                 <button type="submit" className="button">
